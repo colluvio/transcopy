@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <title>Copy YouTube Transcript</title>
+  <link rel="stylesheet" href="popup.css">
+  <!-- URL helpers shared with the content scripts (classic scripts run before the module). -->
+  <script src="../content/segments.js"></script>
+  <script src="../content/detect.js"></script>
+  <script type="module" src="popup.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Copy YouTube Transcript</h1>
+    <label class="option">
+      <input type="checkbox" id="timestamps">
+      Include timestamps
+    </label>
+    <button type="button" id="copy">Copy transcript</button>
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+  <footer>
+    By <a href="https://colluvio.org" target="_blank" rel="noopener noreferrer">Colluvio.org</a>
+  </footer>
+</body>
+</html>

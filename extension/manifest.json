@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Copy YouTube Transcript",
+  "short_name": "Copy Transcript",
+  "version": "1.0.0",
+  "description": "Copy the transcript YouTube shows for a video to your clipboard, as plain text or with timestamps. By Colluvio.org.",
+  "author": "Colluvio.org",
+  "homepage_url": "https://github.com/colluvio/copy-youtube-transcript",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "Copy YouTube Transcript",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": { "default": "Alt+Shift+T" },
+      "description": "Copy the transcript of the current YouTube video"
+    }
+  },
+  "permissions": ["activeTab", "scripting", "clipboardWrite", "storage"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "copy-youtube-transcript@colluvio.org",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Copy YouTube Transcript icon. A transcript sheet (timestamp + text lines)
+       in front of its copy, in the Colluvio.org gradient. Original artwork, MIT. -->
+  <defs>
+    <linearGradient id="colluvio" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#778cfb"/>
+      <stop offset="1" stop-color="#b779d6"/>
+    </linearGradient>
+  </defs>
+  <rect x="42" y="6" width="78" height="92" rx="14" fill="url(#colluvio)"/>
+  <rect x="11" y="32" width="78" height="90" rx="14" fill="#ffffff" stroke="#16171a" stroke-width="7"/>
+  <g fill="#16171a">
+    <rect x="24" y="50" width="13" height="10" rx="5"/>
+    <rect x="43" y="50" width="33" height="10" rx="5"/>
+    <rect x="24" y="72" width="13" height="10" rx="5"/>
+    <rect x="43" y="72" width="33" height="10" rx="5"/>
+    <rect x="24" y="94" width="13" height="10" rx="5"/>
+    <rect x="43" y="94" width="20" height="10" rx="5"/>
+  </g>
+</svg>
