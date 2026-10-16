@@ -11,7 +11,7 @@ YouTube changes its pages often, so the most useful bug report includes:
 - the message the popup showed;
 - whether the transcript panel was open, and whether it shows the "In this video" header with Chapters/Transcript tabs (current layout) or a language dropdown at the bottom (older layout).
 
-Open an issue at https://github.com/colluvio/copy-youtube-transcript/issues.
+Open an issue at https://github.com/colluvio/transcopy/issues.
 
 ## Making a change
 

@@ -1,6 +1,6 @@
-# Copy YouTube Transcript
+# Transcopy
 
-A free, open-source Firefox extension that copies the transcript YouTube shows for a video to your clipboard: as plain text, or with timestamps.
+Transcopy is a free, open-source Firefox extension that copies the transcript YouTube shows for a video to your clipboard: as plain text, or with timestamps.
 
 An independent [Colluvio.org](https://colluvio.org) project. **Not affiliated with, endorsed by or sponsored by YouTube or Google.**
 
@@ -39,7 +39,7 @@ Requires Firefox 140 or later on desktop.
 - Videos without captions have no transcript.
 - YouTube's current transcript panel ("In this video", 2025 onwards) has **no language selector** and ignores the captions (CC) language chosen in the player. The extension copies whatever that panel shows, which is usually the video's original or default track. The older panel, which still appears for some users, has a language dropdown; the extension copies whichever language is selected there and shows its name in the status line.
 - YouTube sometimes doesn't load a transcript into its panel (for example while an ad is playing). The extension then reports the failure; reloading the page usually helps.
-- The extension depends on YouTube's page structure. If YouTube changes it and copying stops working, please [open an issue](https://github.com/colluvio/copy-youtube-transcript/issues).
+- The extension depends on YouTube's page structure. If YouTube changes it and copying stops working, please [open an issue](https://github.com/colluvio/transcopy/issues).
 
 ## How it works
 
@@ -70,7 +70,7 @@ Requirements: Node.js 20+ and Firefox 140+.
 npm ci
 npm test            # unit tests (node:test + jsdom fixtures)
 npm run lint        # web-ext lint
-npm run build       # dist/copy-youtube-transcript-<version>.zip
+npm run build       # dist/transcopy-<version>.zip
 npm start           # web-ext run: Firefox with the extension, on the test video
 npm run test:e2e    # end-to-end in real Firefox against live YouTube (needs `npm run build`)
 ```

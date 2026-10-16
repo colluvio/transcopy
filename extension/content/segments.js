@@ -88,6 +88,6 @@
   }
 
   const api = { ANY_SEGMENT, textOf, readSegments };
-  root.CopyYouTubeTranscript = Object.assign(root.CopyYouTubeTranscript || {}, api);
+  root.Transcopy = Object.assign(root.Transcopy || {}, api);
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

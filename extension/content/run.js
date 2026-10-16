@@ -18,7 +18,7 @@
   const lib =
     typeof module !== "undefined" && module.exports
       ? Object.assign({}, require("./detect.js"), require("./segments.js"), require("./timestamps.js"), require("./format.js"))
-      : root.CopyYouTubeTranscript;
+      : root.Transcopy;
 
   const DEFAULTS = {
     pageTimeoutMs: 5000, // wait for the page to catch up with the URL
@@ -129,6 +129,6 @@
   }
 
   const api = { copyTranscript, isOrdered };
-  root.CopyYouTubeTranscript = Object.assign(root.CopyYouTubeTranscript || {}, api);
+  root.Transcopy = Object.assign(root.Transcopy || {}, api);
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

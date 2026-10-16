@@ -5,7 +5,7 @@
  * helpers turn such labels into seconds and back into a zero-padded label
  * ("00:07", "01:02:03") so every line of a copied transcript lines up.
  *
- * Loaded both as a content script (attaches to globalThis.CopyYouTubeTranscript)
+ * Loaded both as a content script (attaches to globalThis.Transcopy)
  * and as a CommonJS module by the unit tests.
  */
 (function (root) {
@@ -40,6 +40,6 @@
   }
 
   const api = { parseTimestamp, formatTimestamp };
-  root.CopyYouTubeTranscript = Object.assign(root.CopyYouTubeTranscript || {}, api);
+  root.Transcopy = Object.assign(root.Transcopy || {}, api);
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

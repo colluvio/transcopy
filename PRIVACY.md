@@ -1,8 +1,8 @@
-# Privacy policy: Copy YouTube Transcript
+# Privacy policy: Transcopy
 
 Last updated: 16 October 2026
 
-Copy YouTube Transcript is a free, open-source Firefox extension published by Colluvio.org. It does not collect, store, transmit or sell any personal data.
+Transcopy is a free, open-source Firefox extension published by Colluvio.org. It does not collect, store, transmit or sell any personal data.
 
 ## What the extension does
 
@@ -39,4 +39,4 @@ Transcripts come from the YouTube page you are viewing. Your use of YouTube is g
 
 ## Contact
 
-Questions or concerns: open an issue at https://github.com/colluvio/copy-youtube-transcript/issues.
+Questions or concerns: open an issue at https://github.com/colluvio/transcopy/issues.

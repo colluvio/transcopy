@@ -70,6 +70,15 @@ Observations:
 - **Clipboard scope.** The automated checks read Firefox's clipboard. Headless Firefox keeps its own clipboard, so the headless runs say nothing about other applications.
 - **OS clipboard check: inconclusive.** In two headed runs under WSLg, the extension's copy did not appear in the Windows clipboard (`E2E_OS_CLIPBOARD_CMD="powershell.exe -NoProfile -Command Get-Clipboard -Raw"`). A plain write from Firefox's own chrome context did sync to Windows in a separate probe. The cause (WSLg's clipboard bridge or something in the extension's write) was not established. Pasting into another application stays a required manual check (step 14 below) until it passes on a native desktop.
 
+### Rename check for 1.0.1, 16 October 2026
+
+1.0.1 only renames the add-on (name, add-on ID `transcopy@colluvio.org`, global `Transcopy`, package file name). After the rename:
+
+- `npm test`: 32/32 pass. `npm run lint`: 0 errors, the same 1 warning.
+- In Firefox 158, the toolbar button exists under the new ID and shows the tooltip "Transcopy: copy the YouTube transcript". Clicking it on `0UPvLfZ6X3Q` made the extension open YouTube's transcript panel, so the popup and the injected scripts run.
+- `missing` and `not-a-video` pass.
+- **Not re-verified end to end:** the scenarios that need a transcript to load failed, because YouTube had stopped serving transcripts to this test connection after the day's runs. Its own `get_transcript` request returned HTTP 400 even with the panel opened by hand and no extension involved, including for `0UPvLfZ6X3Q`, which loaded earlier the same day. Rerun `npm run test:e2e` from another connection or later.
+
 ## Manual test checklist
 
 Not yet run by a person for 1.0.0. In particular the keyboard shortcut (13), the cross-application paste (14), dark mode (15) and the on-screen status messages were not verified automatically. Use this before each release, in your normal Firefox profile. Load the extension with `npm start` or `about:debugging` → **Load Temporary Add-on…** → `extension/manifest.json`.

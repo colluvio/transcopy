@@ -12,7 +12,7 @@
   const seg =
     typeof module !== "undefined" && module.exports
       ? require("./segments.js")
-      : root.CopyYouTubeTranscript;
+      : root.Transcopy;
 
   const PANEL = "ytd-engagement-panel-section-list-renderer";
   const EXPANDED = "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED";
@@ -103,6 +103,6 @@
     isPanelLoading,
     legacyLanguageLabel,
   };
-  root.CopyYouTubeTranscript = Object.assign(root.CopyYouTubeTranscript || {}, api);
+  root.Transcopy = Object.assign(root.Transcopy || {}, api);
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

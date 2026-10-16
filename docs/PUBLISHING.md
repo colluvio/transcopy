@@ -79,12 +79,12 @@ node scripts/amo.mjs status
 
 At https://addons.mozilla.org/developers/addons → the add-on → **Edit Product Page**:
 
-- **Support website**: `https://github.com/colluvio/copy-youtube-transcript/issues`. The API cannot set this field.
+- **Support website**: `https://github.com/colluvio/transcopy/issues`. The API cannot set this field.
 - Check the listing preview.
 
 ## Notes
 
-- **Name.** An unrelated add-on called "Copy Youtube Transcript" already exists on AMO (slug `copy-youtube-transcript`, by another developer). This listing uses the slug `copy-youtube-transcript-colluvio`. If AMO rejects the name as too similar, rename it in `amo/metadata.json` and `extension/manifest.json`, for example to "Copy YouTube Transcript by Colluvio".
+- **Name.** The add-on is called **Transcopy**, slug `transcopy` (https://addons.mozilla.org/firefox/addon/transcopy/). It was renamed from "Copy YouTube Transcript" before its first submission, because several add-ons with nearly that name already exist on AMO. Both the name and the slug were free on 16 October 2026; if the slug has been taken by the time you submit, `web-ext sign` fails and the slug in `amo/metadata.json` needs changing.
 - **Android.** The extension targets Firefox for desktop only. Mobile YouTube uses a different page, so `amo/metadata.json` lists only `firefox` compatibility. `web-ext lint` shows one warning about Firefox for Android versions; it can be ignored because Android isn't targeted.
 - **Data collection.** The manifest declares `data_collection_permissions: { "required": ["none"] }`, which AMO requires for new extensions since November 2025. This needs Firefox 140, hence `strict_min_version: 140.0`.
 
@@ -92,4 +92,5 @@ At https://addons.mozilla.org/developers/addons → the add-on → **Edit Produc
 
 | Date | Event |
 |---|---|
-| 2026-10-16 | v1.0.0 built, tested and released on GitHub. AMO submission waiting for steps 1–2. |
+| 2026-10-16 | v1.0.0 built, tested and released on GitHub as "Copy YouTube Transcript". |
+| 2026-10-16 | Renamed to Transcopy; v1.0.1 released on GitHub. AMO submission waiting for steps 1–2. |

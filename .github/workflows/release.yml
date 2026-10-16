@@ -29,7 +29,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - name: Checksum
-        run: cd dist && sha256sum "copy-youtube-transcript-$VERSION.zip" > "copy-youtube-transcript-$VERSION.zip.sha256"
+        run: cd dist && sha256sum "transcopy-$VERSION.zip" > "transcopy-$VERSION.zip.sha256"
       - name: Release notes from CHANGELOG.md
         run: |
           awk -v v="$VERSION" '$0 ~ "^## \\[" v "\\]" {p=1; next} /^## \[/ {p=0} p' CHANGELOG.md \
@@ -40,7 +40,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" \
-            "dist/copy-youtube-transcript-$VERSION.zip" \
-            "dist/copy-youtube-transcript-$VERSION.zip.sha256" \
-            --title "Copy YouTube Transcript $VERSION" \
+            "dist/transcopy-$VERSION.zip" \
+            "dist/transcopy-$VERSION.zip.sha256" \
+            --title "Transcopy $VERSION" \
             --notes-file release-notes.md

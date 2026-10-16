@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <!-- Copy YouTube Transcript icon. A transcript sheet (timestamp + text lines)
+  <!-- Transcopy icon. A transcript sheet (timestamp + text lines)
        in front of its copy, in the Colluvio.org gradient. Original artwork, MIT. -->
   <defs>
     <linearGradient id="colluvio" x1="0" y1="0" x2="1" y2="1">

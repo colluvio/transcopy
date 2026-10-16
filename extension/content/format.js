@@ -12,7 +12,7 @@
   const ts =
     typeof module !== "undefined" && module.exports
       ? require("./timestamps.js")
-      : root.CopyYouTubeTranscript;
+      : root.Transcopy;
 
   /**
    * Collapse runs of whitespace (spaces, tabs, line breaks, no-break spaces)
@@ -53,6 +53,6 @@
   }
 
   const api = { normalizeText, formatTranscript };
-  root.CopyYouTubeTranscript = Object.assign(root.CopyYouTubeTranscript || {}, api);
+  root.Transcopy = Object.assign(root.Transcopy || {}, api);
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

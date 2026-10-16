@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-10-16
+
+### Changed
+
+- Renamed from "Copy YouTube Transcript" to **Transcopy**, because several add-ons with nearly the same name already exist on addons.mozilla.org.
+- New add-on ID `transcopy@colluvio.org` (was `copy-youtube-transcript@colluvio.org`; that version was never on addons.mozilla.org). A temporary install of 1.0.0 is a separate add-on: remove it before installing this one.
+- The repository moved to https://github.com/colluvio/transcopy. The old address redirects.
+- The release package is now `transcopy-<version>.zip`.
+
+No change in behavior.
+
 ## [1.0.0] - 2026-10-16
 
 ### Added
@@ -14,4 +25,5 @@ All notable changes to this project are documented here. The format follows [Kee
 - Clear error messages for pages that aren't videos, missing transcripts, load failures, incomplete loads, navigation during copying and clipboard errors.
 - Unit tests with synthetic HTML fixtures, an end-to-end test in real Firefox, `web-ext lint`, and GitHub Actions for CI and release packaging.
 
-[1.0.0]: https://github.com/colluvio/copy-youtube-transcript/releases/tag/v1.0.0
+[1.0.1]: https://github.com/colluvio/transcopy/releases/tag/v1.0.1
+[1.0.0]: https://github.com/colluvio/transcopy/releases/tag/v1.0.0

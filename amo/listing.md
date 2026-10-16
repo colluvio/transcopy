@@ -4,17 +4,17 @@
 
 | Field | Value |
 |---|---|
-| Name | Copy YouTube Transcript |
-| Slug / URL | `copy-youtube-transcript-colluvio` → https://addons.mozilla.org/firefox/addon/copy-youtube-transcript-colluvio/ |
-| Add-on ID | `copy-youtube-transcript@colluvio.org` |
+| Name | Transcopy |
+| Slug / URL | `transcopy` → https://addons.mozilla.org/firefox/addon/transcopy/ |
+| Add-on ID | `transcopy@colluvio.org` |
 | Summary | Copy the transcript of a YouTube video to your clipboard in one click, as plain text or with timestamps. Uses the text YouTube shows, in its language. No tracking, no accounts. |
 | Category | Photos, Music & Videos (`photos-music-videos`) |
 | Tags | `youtube` (AMO only accepts tags from its fixed list) |
 | License | MIT |
 | Compatibility | Firefox for desktop 140+ (not Android) |
-| Homepage | https://github.com/colluvio/copy-youtube-transcript |
-| Support website | https://github.com/colluvio/copy-youtube-transcript/issues (set in the Developer Hub; the API can't set it) |
-| Source code | https://github.com/colluvio/copy-youtube-transcript |
+| Homepage | https://github.com/colluvio/transcopy |
+| Support website | https://github.com/colluvio/transcopy/issues (set in the Developer Hub; the API can't set it) |
+| Source code | https://github.com/colluvio/transcopy |
 | Privacy policy | [PRIVACY.md](../PRIVACY.md), uploaded by `node scripts/amo.mjs listing` |
 | Data collection | None (`data_collection_permissions.required: ["none"]`) |
 | Experimental / requires payment | No / No |

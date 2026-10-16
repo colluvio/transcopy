@@ -36,13 +36,13 @@ async function extract(tabId, timestamps) {
     await browser.scripting.executeScript({ target: { tabId }, files: CONTENT_SCRIPTS });
     const [injection] = await browser.scripting.executeScript({
       target: { tabId },
-      func: (opts) => globalThis.CopyYouTubeTranscript.copyTranscript(opts),
+      func: (opts) => globalThis.Transcopy.copyTranscript(opts),
       args: [{ timestamps }],
     });
     if (injection && injection.error) throw injection.error;
     return (injection && injection.result) || { ok: false, code: "UNEXPECTED" };
   } catch (error) {
-    console.error("Copy YouTube Transcript:", error);
+    console.error("Transcopy:", error);
     return { ok: false, code: "INJECTION_FAILED" };
   }
 }
@@ -54,7 +54,7 @@ async function copy() {
     const tab = await activeTab();
     // activeTab exposes the URL of the tab the user clicked on. Only inject
     // into YouTube watch pages.
-    if (!tab || !globalThis.CopyYouTubeTranscript.videoIdFromUrl(tab.url || "")) {
+    if (!tab || !globalThis.Transcopy.videoIdFromUrl(tab.url || "")) {
       setStatus(messageFor("NOT_A_VIDEO"), "error");
       return;
     }
@@ -68,7 +68,7 @@ async function copy() {
     try {
       await writeText(result.text);
     } catch (error) {
-      console.error("Copy YouTube Transcript:", error);
+      console.error("Transcopy:", error);
       setStatus(messageFor("CLIPBOARD_FAILED"), "error");
       return;
     }
@@ -78,7 +78,7 @@ async function copy() {
     if (result.language) message += ` · ${result.language}`;
     setStatus(`${message}.`, "ok");
   } catch (error) {
-    console.error("Copy YouTube Transcript:", error);
+    console.error("Transcopy:", error);
     setStatus(messageFor("UNEXPECTED"), "error");
   } finally {
     copyButton.disabled = false;

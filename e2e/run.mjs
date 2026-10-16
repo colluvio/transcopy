@@ -27,7 +27,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const manifest = JSON.parse(await readFile(`${root}extension/manifest.json`, "utf8"));
 const ADDON_ID = manifest.browser_specific_settings.gecko.id;
 const WIDGET_ID = `${ADDON_ID.toLowerCase().replace(/[^a-z0-9_-]/g, "_")}-browser-action`;
-const PACKAGE = `${root}dist/copy-youtube-transcript-${manifest.version}.zip`;
+const PACKAGE = `${root}dist/transcopy-${manifest.version}.zip`;
 const SENTINEL = "clipboard-sentinel-not-a-transcript";
 
 // Test videos. Only short excerpts of spoken (non-music) videos are printed.
@@ -194,7 +194,7 @@ async function runContentScriptsInPage(driver) {
   return driver.executeAsyncScript(
     `const done = arguments[arguments.length - 1];
      for (const src of arguments[0]) (0, eval)(src);
-     globalThis.CopyYouTubeTranscript.copyTranscript({})
+     globalThis.Transcopy.copyTranscript({})
        .then(r => done({ ok: r.ok, code: r.code, segmentCount: r.segmentCount }), e => done({ error: String(e) }));`,
     sources
   );
