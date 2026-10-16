@@ -24,7 +24,7 @@ Videos over an hour use `[HH:MM:SS]` on every line. Without timestamps you get o
 - **The text YouTube displays.** It is read from YouTube's own transcript panel, in the language shown there. Nothing is translated, summarized, rewritten or de-duplicated. Chapter titles and the screen-reader timestamp labels ("1 minute, 8 seconds") are left out.
 - **The panel can be closed.** If it is, the extension opens it with YouTube's "Show transcript" button and waits until the full transcript has loaded.
 - **Never partial.** If the transcript is missing, fails to load, is still loading, or belongs to the previous video during YouTube's in-page navigation, nothing is copied and the popup says why.
-- **Private.** No network requests, analytics, accounts or remote code. See [PRIVACY.md](PRIVACY.md).
+- **Private.** The extension sends nothing anywhere: no server, no analytics, no accounts, no remote code. The only network activity is YouTube's own page loading the transcript after the extension presses YouTube's "Show transcript" button. See [PRIVACY.md](PRIVACY.md).
 
 ## Install
 

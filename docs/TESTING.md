@@ -30,7 +30,7 @@ The fixtures copy YouTube's DOM structure but contain only invented text. The te
 
 ## End-to-end test
 
-`e2e/run.mjs` starts Firefox through geckodriver and installs `dist/*.zip` as a temporary add-on. It then clicks the extension's toolbar button from Firefox's privileged chrome context, which grants `activeTab` exactly like a real click. The popup copies, and the test reads the system clipboard and compares it with what YouTube's panel shows.
+`e2e/run.mjs` starts Firefox through geckodriver and installs `dist/*.zip` as a temporary add-on. It then clicks the extension's toolbar button from Firefox's privileged chrome context, which grants `activeTab` exactly like a real click. The popup copies, and the test reads Firefox's clipboard back from the chrome context and compares it with what YouTube's panel shows.
 
 ```bash
 npm run build
@@ -38,6 +38,9 @@ npm run test:e2e                                  # headless
 HEADED=1 npm run test:e2e                         # watch it
 E2E_ONLY=supplied-closed,long npm run test:e2e    # selected scenarios
 FIREFOX_BIN=/path/to/firefox GECKODRIVER=/path/to/geckodriver npm run test:e2e
+
+# Optional: also compare with the operating system clipboard, read by another program
+HEADED=1 E2E_OS_CLIPBOARD_CMD="xclip -o -selection clipboard" npm run test:e2e
 ```
 
 Firefox 140+ and geckodriver 0.36+ are needed (geckodriver runs with `--allow-system-access`). Selenium Manager downloads both if the variables are unset.
@@ -64,10 +67,12 @@ Observations:
 
 - In this anonymous, automated profile, YouTube refused transcripts for roughly half of the videos sampled. Its own `get_transcript` request returned HTTP 400 `FAILED_PRECONDITION`, and the panel stayed empty. This also happened with a visible (non-headless) window. The user's own Firefox loaded such transcripts, so this looks like YouTube treating automated sessions differently. The extension reports `LOAD_FAILED` in that case and copies nothing.
 - The tests ran in a fresh profile, where YouTube's cookie banner appears; the e2e script declines it ("Reject all").
+- **Clipboard scope.** The automated checks read Firefox's clipboard. Headless Firefox keeps its own clipboard, so the headless runs say nothing about other applications.
+- **OS clipboard check: inconclusive.** In two headed runs under WSLg, the extension's copy did not appear in the Windows clipboard (`E2E_OS_CLIPBOARD_CMD="powershell.exe -NoProfile -Command Get-Clipboard -Raw"`). A plain write from Firefox's own chrome context did sync to Windows in a separate probe. The cause (WSLg's clipboard bridge or something in the extension's write) was not established. Pasting into another application stays a required manual check (step 14 below) until it passes on a native desktop.
 
 ## Manual test checklist
 
-Use this before each release, in your normal Firefox profile. Load the extension with `npm start` or `about:debugging` → **Load Temporary Add-on…** → `extension/manifest.json`.
+Not yet run by a person for 1.0.0. In particular the keyboard shortcut (13), the cross-application paste (14), dark mode (15) and the on-screen status messages were not verified automatically. Use this before each release, in your normal Firefox profile. Load the extension with `npm start` or `about:debugging` → **Load Temporary Add-on…** → `extension/manifest.json`.
 
 1. **Supplied video, panel closed.** Open https://www.youtube.com/watch?v=0UPvLfZ6X3Q without opening the transcript, then click the toolbar button.
    - The popup says "Copied 104 segments (up to 13:29)." and YouTube's transcript panel is now open.
@@ -84,5 +89,5 @@ Use this before each release, in your normal Firefox profile. Load the extension
 11. **Reload.** Reload a video page and copy again.
 12. **Other pages.** On the YouTube home page and on a non-YouTube site, the popup says to open a video page.
 13. **Keyboard shortcut.** <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> opens the popup and copies. It can be changed in `about:addons` → gear → Manage Extension Shortcuts.
-14. **Clipboard.** Paste into another application (not only Firefox) to confirm the system clipboard is used.
+14. **Clipboard in other applications (required).** After copying, paste into an application outside Firefox (a text editor, Word, the ChatGPT or Claude desktop app). The automated tests only verify Firefox's clipboard; see the note above.
 15. **Dark mode.** The popup is readable with the system in dark mode.

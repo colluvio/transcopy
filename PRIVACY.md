@@ -8,14 +8,14 @@ Copy YouTube Transcript is a free, open-source Firefox extension published by Co
 
 When you click its toolbar button (or press its keyboard shortcut) on a youtube.com video page, the extension:
 
-1. reads the transcript YouTube displays in that tab, opening YouTube's own transcript panel first if it is closed;
+1. reads the transcript YouTube displays in that tab;
 2. writes the transcript text to your clipboard.
 
-All of this happens inside your browser.
+If YouTube's transcript panel is closed, the extension first presses YouTube's own "Show transcript" button. YouTube's page then loads the transcript from YouTube, exactly as it would if you had clicked that button yourself. Everything the extension itself does happens inside your browser.
 
 ## What it does not do
 
-- It makes no network requests. The extension has no server and calls no third-party services, including AI services and analytics.
+- It sends nothing anywhere. The extension has no server, makes no network requests of its own and contacts no third-party services (no AI services, no analytics).
 - It does not read your browsing history or any page you have not clicked the button on.
 - It does not use cookies, accounts or identifiers.
 - It does not load remote code.
@@ -26,12 +26,10 @@ The only thing the extension stores is your "Include timestamps" choice, kept wi
 
 ## Permissions
 
-| Permission | Why |
-|---|---|
-| `activeTab` | Access the current tab only after you click the extension's button or use its shortcut. |
-| `scripting` | Run the transcript reader in that tab. |
-| `clipboardWrite` | Put the transcript on your clipboard. |
-| `storage` | Remember the "Include timestamps" choice. |
+- activeTab: access the current tab only after you click the extension's button or use its shortcut.
+- scripting: run the transcript reader in that tab.
+- clipboardWrite: put the transcript on your clipboard.
+- storage: remember the "Include timestamps" choice.
 
 In Firefox's data-collection settings the extension declares that it collects no data.
 

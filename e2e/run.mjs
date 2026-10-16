@@ -244,6 +244,20 @@ const SCENARIOS = {
     check("supplied-closed: extension opened YouTube's panel", panel.open);
     check("supplied-closed: about 104 segments, up to 13:29", panel.count >= 100 && panel.lastTs === "13:29", `${panel.count} segments, last ${panel.lastTs}`);
     if (r.changed) checkTextOnly("supplied-closed", r.text, panel);
+    // Optional: confirm the text reached the operating system's clipboard,
+    // read by another program while Firefox is still running, e.g.
+    //   E2E_OS_CLIPBOARD_CMD="xclip -o -selection clipboard"
+    //   E2E_OS_CLIPBOARD_CMD="powershell.exe -NoProfile -Command Get-Clipboard -Raw"   (WSL)
+    if (r.changed && process.env.E2E_OS_CLIPBOARD_CMD) {
+      const { execSync } = await import("node:child_process");
+      let os = "";
+      // Clipboard bridges (WSLg, remote desktops) sync asynchronously.
+      for (let i = 0; i < 10 && os !== r.text; i++) {
+        await sleep(1000);
+        os = execSync(process.env.E2E_OS_CLIPBOARD_CMD, { encoding: "utf8" }).replace(/\r\n/g, "\n").replace(/\n+$/, "");
+      }
+      check("supplied-closed: same text in the OS clipboard (read outside Firefox)", os === r.text, `${os ? lines(os).length : 0} lines`);
+    }
   },
 
   async "supplied-open-timestamps"(d) {
