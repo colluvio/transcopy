@@ -1,0 +1,73 @@
+<!doctype html>
+<!--
+  Synthetic fixture modelled on YouTube's 2025-2026 watch page ("In this
+  video" panel). The structure mirrors the live DOM; all text is invented.
+-->
+<html><body>
+<ytd-app>
+  <ytd-watch-flexy video-id="TESTVIDEO01">
+    <div id="description">
+      <ytd-video-description-transcript-section-renderer>
+        <ytd-button-renderer><yt-button-shape><button aria-label="Show transcript">Show transcript</button></yt-button-shape></ytd-button-renderer>
+      </ytd-video-description-transcript-section-renderer>
+    </div>
+    <div id="panels">
+      <!-- A collapsed transcript panel left over in the DOM: must be ignored. -->
+      <ytd-engagement-panel-section-list-renderer target-id="engagement-panel-searchable-transcript" visibility="ENGAGEMENT_PANEL_VISIBILITY_HIDDEN">
+        <div id="content">
+          <transcript-segment-view-model><div aria-hidden="true" class="ytwTranscriptSegmentViewModelTimestamp">0:00</div><div class="ytwTranscriptSegmentViewModelTimestampA11yLabel">0 seconds</div><span class="ytAttributedStringHost" role="text">Stale text from a hidden panel.</span></transcript-segment-view-model>
+        </div>
+      </ytd-engagement-panel-section-list-renderer>
+
+      <ytd-engagement-panel-section-list-renderer visibility="ENGAGEMENT_PANEL_VISIBILITY_EXPANDED">
+        <div id="header">
+          <ytd-engagement-panel-title-header-renderer>
+            <h2 id="title"><yt-formatted-string id="title-text">In this video</yt-formatted-string></h2>
+            <div id="visibility-button"><button aria-label="Close"></button></div>
+          </ytd-engagement-panel-title-header-renderer>
+          <chip-bar-view-model><div role="tablist">
+            <button role="tab" aria-label="Chapters"><div class="ytChipShapeText">Chapters</div></button>
+            <button role="tab" aria-label="Transcript"><div class="ytChipShapeText">Transcript</div></button>
+          </div></chip-bar-view-model>
+        </div>
+        <div id="content">
+          <yt-section-list-renderer>
+            <div class="ytSectionListRendererHeader"><textarea aria-label="Search transcript"></textarea></div>
+            <div class="ytSectionListRendererContents">
+              <yt-item-section-renderer>
+                <div id="header"><div><macro-markers-panel-item-view-model role="button"><timeline-chapter-view-model><h3 class="ytwTimelineChapterViewModelTitle">Chapter 1: Getting started</h3></timeline-chapter-view-model></macro-markers-panel-item-view-model></div></div>
+                <div id="contents">
+                  <div><macro-markers-panel-item-view-model role="button"><timeline-item-view-model><div class="ytwTimelineItemViewModelContentItems">
+                    <transcript-segment-view-model class="ytwTranscriptSegmentViewModelHost ytwTranscriptSegmentViewModelHostActive"><div aria-hidden="true" class="ytwTranscriptSegmentViewModelTimestamp ytwTranscriptSegmentViewModelTimestampActive">0:00</div><div class="ytwTranscriptSegmentViewModelTimestampA11yLabel">0 seconds</div><span class="ytAttributedStringHost ytAttributedStringLinkInheritColor" role="text">All right. Today we look at how a river carries sand downstream.</span></transcript-segment-view-model>
+                  </div></timeline-item-view-model></macro-markers-panel-item-view-model></div>
+                  <div><macro-markers-panel-item-view-model role="button"><timeline-item-view-model><div class="ytwTimelineItemViewModelContentItems">
+                    <transcript-segment-view-model class="ytwTranscriptSegmentViewModelHost"><div aria-hidden="true" class="ytwTranscriptSegmentViewModelTimestamp">0:07</div><div class="ytwTranscriptSegmentViewModelTimestampA11yLabel">7 seconds</div><span class="ytAttributedStringHost ytAttributedStringLinkInheritColor" role="text">So this is a model that's
+small enough to fit on a table.</span></transcript-segment-view-model>
+                  </div></timeline-item-view-model></macro-markers-panel-item-view-model></div>
+                </div>
+              </yt-item-section-renderer>
+              <yt-item-section-renderer>
+                <div id="header"><div><macro-markers-panel-item-view-model role="button"><timeline-chapter-view-model><h3 class="ytwTimelineChapterViewModelTitle">Chapter 2: Setting it up</h3></timeline-chapter-view-model></macro-markers-panel-item-view-model></div></div>
+                <div id="contents">
+                  <div><macro-markers-panel-item-view-model role="button"><timeline-item-view-model><div class="ytwTimelineItemViewModelContentItems">
+                    <transcript-segment-view-model class="ytwTranscriptSegmentViewModelHost"><div aria-hidden="true" class="ytwTranscriptSegmentViewModelTimestamp">1:08</div><div class="ytwTranscriptSegmentViewModelTimestampA11yLabel">1 minute, 8 seconds</div><span class="ytAttributedStringHost ytAttributedStringLinkInheritColor" role="text">So I'm going to pour the water now.</span></transcript-segment-view-model>
+                  </div></timeline-item-view-model></macro-markers-panel-item-view-model></div>
+                  <div><macro-markers-panel-item-view-model role="button"><timeline-item-view-model><div class="ytwTimelineItemViewModelContentItems">
+                    <transcript-segment-view-model class="ytwTranscriptSegmentViewModelHost"><div aria-hidden="true" class="ytwTranscriptSegmentViewModelTimestamp">1:15</div><div class="ytwTranscriptSegmentViewModelTimestampA11yLabel">1 minute, 15 seconds</div><span class="ytAttributedStringHost ytAttributedStringLinkInheritColor" role="text">[Music]</span></transcript-segment-view-model>
+                  </div></timeline-item-view-model></macro-markers-panel-item-view-model></div>
+                  <div><macro-markers-panel-item-view-model role="button"><timeline-item-view-model><div class="ytwTimelineItemViewModelContentItems">
+                    <transcript-segment-view-model class="ytwTranscriptSegmentViewModelHost"><div aria-hidden="true" class="ytwTranscriptSegmentViewModelTimestamp">1:15</div><div class="ytwTranscriptSegmentViewModelTimestampA11yLabel">1 minute, 15 seconds</div><span class="ytAttributedStringHost ytAttributedStringLinkInheritColor" role="text">[Music]</span></transcript-segment-view-model>
+                  </div></timeline-item-view-model></macro-markers-panel-item-view-model></div>
+                  <div><macro-markers-panel-item-view-model role="button"><timeline-item-view-model><div class="ytwTimelineItemViewModelContentItems">
+                    <transcript-segment-view-model class="ytwTranscriptSegmentViewModelHost"><div aria-hidden="true" class="ytwTranscriptSegmentViewModelTimestamp">13:29</div><div class="ytwTranscriptSegmentViewModelTimestampA11yLabel">13 minutes, 29 seconds</div><span class="ytAttributedStringHost ytAttributedStringLinkInheritColor" role="text">¡Gracias! Ça va — 日本語 &amp; “quotes”<br>after a line break.</span></transcript-segment-view-model>
+                  </div></timeline-item-view-model></macro-markers-panel-item-view-model></div>
+                </div>
+              </yt-item-section-renderer>
+            </div>
+          </yt-section-list-renderer>
+        </div>
+      </ytd-engagement-panel-section-list-renderer>
+    </div>
+  </ytd-watch-flexy>
+</ytd-app>
+</body></html>

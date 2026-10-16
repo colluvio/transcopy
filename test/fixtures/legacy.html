@@ -1,0 +1,55 @@
+<!doctype html>
+<!--
+  Synthetic fixture modelled on YouTube's older transcript panel
+  (ytd-transcript-renderer, 2021-2025), including its language dropdown.
+  All text is invented.
+-->
+<html><body>
+<ytd-app>
+  <ytd-watch-flexy video-id="TESTVIDEO02">
+    <ytd-video-description-transcript-section-renderer>
+      <button aria-label="Show transcript">Show transcript</button>
+    </ytd-video-description-transcript-section-renderer>
+    <ytd-engagement-panel-section-list-renderer target-id="engagement-panel-searchable-transcript" visibility="ENGAGEMENT_PANEL_VISIBILITY_EXPANDED">
+      <div id="content">
+        <ytd-transcript-renderer>
+          <ytd-transcript-search-panel-renderer>
+            <div id="body">
+              <ytd-transcript-segment-list-renderer>
+                <div id="segments-container">
+                  <ytd-transcript-section-header-renderer><div id="header"><h2>Introduction</h2></div></ytd-transcript-section-header-renderer>
+                  <ytd-transcript-segment-renderer>
+                    <div class="segment" role="button" aria-label="2 seconds Hola a todos y bienvenidos.">
+                      <div class="segment-start-offset" aria-hidden="true"><div class="segment-timestamp">
+                        0:02
+                      </div></div>
+                      <yt-formatted-string class="segment-text">Hola a todos y bienvenidos.</yt-formatted-string>
+                    </div>
+                  </ytd-transcript-segment-renderer>
+                  <ytd-transcript-segment-renderer>
+                    <div class="segment" role="button">
+                      <div class="segment-start-offset" aria-hidden="true"><div class="segment-timestamp">59:58</div></div>
+                      <yt-formatted-string class="segment-text">Hoy hablamos de   sedimentos.</yt-formatted-string>
+                    </div>
+                  </ytd-transcript-segment-renderer>
+                  <ytd-transcript-segment-renderer>
+                    <div class="segment" role="button">
+                      <div class="segment-start-offset" aria-hidden="true"><div class="segment-timestamp">1:02:03</div></div>
+                      <yt-formatted-string class="segment-text">Hasta la próxima.</yt-formatted-string>
+                    </div>
+                  </ytd-transcript-segment-renderer>
+                </div>
+              </ytd-transcript-segment-list-renderer>
+            </div>
+            <div id="footer">
+              <ytd-transcript-footer-renderer>
+                <yt-sort-filter-sub-menu-renderer><yt-dropdown-menu><tp-yt-paper-button><div id="label-text">Spanish (auto-generated)</div></tp-yt-paper-button></yt-dropdown-menu></yt-sort-filter-sub-menu-renderer>
+              </ytd-transcript-footer-renderer>
+            </div>
+          </ytd-transcript-search-panel-renderer>
+        </ytd-transcript-renderer>
+      </div>
+    </ytd-engagement-panel-section-list-renderer>
+  </ytd-watch-flexy>
+</ytd-app>
+</body></html>
