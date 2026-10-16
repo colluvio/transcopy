@@ -31,7 +31,10 @@ jobs:
       - name: Checksum
         run: cd dist && sha256sum "copy-youtube-transcript-$VERSION.zip" > "copy-youtube-transcript-$VERSION.zip.sha256"
       - name: Release notes from CHANGELOG.md
-        run: awk -v v="$VERSION" '$0 ~ "^## \\[" v "\\]" {p=1; next} /^## \[/ {p=0} p' CHANGELOG.md | sed '/^\[.*\]: /d' > release-notes.md
+        run: |
+          awk -v v="$VERSION" '$0 ~ "^## \\[" v "\\]" {p=1; next} /^## \[/ {p=0} p' CHANGELOG.md \
+            | sed '/^\[.*\]: /d' > release-notes.md
+          cat release-notes.md
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
