@@ -1,0 +1,34 @@
+{
+  "name": "copy-youtube-transcript",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Firefox extension that copies the transcript YouTube displays for a video to the clipboard.",
+  "license": "MIT",
+  "author": "Colluvio.org",
+  "homepage": "https://github.com/colluvio/copy-youtube-transcript",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colluvio/copy-youtube-transcript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/colluvio/copy-youtube-transcript/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "lint": "web-ext lint --source-dir extension --self-hosted=false",
+    "check": "npm test && npm run lint",
+    "build": "web-ext build --source-dir extension --artifacts-dir dist --overwrite-dest --filename copy-youtube-transcript-{version}.zip",
+    "start": "web-ext run --source-dir extension --start-url https://www.youtube.com/watch?v=0UPvLfZ6X3Q",
+    "test:e2e": "node e2e/run.mjs",
+    "icons": "node scripts/render-icons.mjs",
+    "screenshots": "node scripts/render-screenshots.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "30.1.3",
+    "selenium-webdriver": "4.51.0",
+    "web-ext": "10.8.0"
+  }
+}
