@@ -8,6 +8,8 @@
 #     WEB_EXT_API_KEY=user:12345678:123
 #     WEB_EXT_API_SECRET=...
 #
+# The names JWT_ISSUER and JWT_SECRET (as AMO's key page labels them) also work.
+#
 # Override the location with AMO_ENV_FILE=/path/to/file.
 #
 # The first run creates the listing from amo/metadata.json. Later runs with a
@@ -32,6 +34,10 @@ set -a
 # shellcheck disable=SC1090
 . "$env_file"
 set +a
+# AMO's API key page calls the pair "JWT issuer" and "JWT secret"; accept those names too.
+export WEB_EXT_API_KEY="${WEB_EXT_API_KEY:-${JWT_ISSUER:-}}"
+export WEB_EXT_API_SECRET="${WEB_EXT_API_SECRET:-${JWT_SECRET:-}}"
+unset JWT_ISSUER JWT_SECRET
 : "${WEB_EXT_API_KEY:?WEB_EXT_API_KEY is not set in $env_file}"
 : "${WEB_EXT_API_SECRET:?WEB_EXT_API_SECRET is not set in $env_file}"
 

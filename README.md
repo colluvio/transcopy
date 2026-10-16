@@ -28,7 +28,7 @@ Videos over an hour use `[HH:MM:SS]` on every line. Without timestamps you get o
 
 ## Install
 
-- **Firefox Add-ons:** see the [Mozilla publication status](#mozilla-add-ons) below.
+- **Firefox Add-ons:** https://addons.mozilla.org/firefox/addon/transcopy/ once Mozilla approves it; see the [publication status](#mozilla-add-ons) below.
 - **From source (temporary, for testing):** open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on…** and select `extension/manifest.json`. Temporary add-ons are removed when Firefox restarts.
 
 Requires Firefox 140 or later on desktop.
@@ -83,7 +83,7 @@ There is no bundler and no build step beyond zipping `extension/`. The icon PNGs
 
 ## Mozilla Add-ons
 
-Listing: not yet published. Status is tracked in [docs/PUBLISHING.md](docs/PUBLISHING.md#status).
+Submitted to addons.mozilla.org on 16 October 2026 and awaiting Mozilla's review. Once approved it will be at https://addons.mozilla.org/firefox/addon/transcopy/. Status is tracked in [docs/PUBLISHING.md](docs/PUBLISHING.md#status).
 
 ## License
 

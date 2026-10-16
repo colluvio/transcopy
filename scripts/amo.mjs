@@ -38,10 +38,13 @@ async function loadCredentials() {
         return [l.slice(0, i).trim(), l.slice(i + 1).trim().replace(/^(['"])(.*)\1$/, "$2")];
       })
   );
-  if (!env.WEB_EXT_API_KEY || !env.WEB_EXT_API_SECRET) {
-    throw new Error(`${file} must define WEB_EXT_API_KEY and WEB_EXT_API_SECRET.`);
+  // AMO's API key page calls the pair "JWT issuer" and "JWT secret"; accept those names too.
+  const key = env.WEB_EXT_API_KEY || env.JWT_ISSUER;
+  const secret = env.WEB_EXT_API_SECRET || env.JWT_SECRET;
+  if (!key || !secret) {
+    throw new Error(`${file} must define WEB_EXT_API_KEY and WEB_EXT_API_SECRET (or JWT_ISSUER and JWT_SECRET).`);
   }
-  return { key: env.WEB_EXT_API_KEY, secret: env.WEB_EXT_API_SECRET };
+  return { key, secret };
 }
 
 const b64url = (data) => Buffer.from(data).toString("base64url");
@@ -55,7 +58,7 @@ function jwt({ key, secret }) {
   return `${header}.${payload}.${signature}`;
 }
 
-async function api(creds, method, path, body) {
+async function api(creds, method, path, body, attempt = 0) {
   const headers = { Authorization: `JWT ${jwt(creds)}` };
   let payload = body;
   if (body && !(body instanceof FormData)) {
@@ -63,6 +66,13 @@ async function api(creds, method, path, body) {
     payload = JSON.stringify(body);
   }
   const res = await fetch(`${API}${path}`, { method, headers, body: payload });
+  if (res.status === 429 && attempt < 5) {
+    // AMO throttles uploads; wait as long as it asks (Retry-After) and try again.
+    const wait = Number(res.headers.get("retry-after")) || 60;
+    console.log(`throttled by AMO, retrying in ${wait} s`);
+    await new Promise((r) => setTimeout(r, (wait + 1) * 1000));
+    return api(creds, method, path, body, attempt + 1);
+  }
   const text = await res.text();
   let data;
   try {
@@ -121,6 +131,13 @@ async function listing(creds) {
   console.log("icon: uploaded");
 
   const existing = addon.previews || [];
+  // A screenshot uploaded by an interrupted run may still lack its caption.
+  for (const [i, preview] of existing.entries()) {
+    if (i < SCREENSHOTS.length && !(preview.caption && preview.caption["en-US"])) {
+      await api(creds, "PATCH", `${addonPath}previews/${preview.id}/`, { caption: { "en-US": SCREENSHOTS[i][1] }, position: i });
+      console.log(`screenshot ${i + 1}: caption set`);
+    }
+  }
   if (existing.length >= SCREENSHOTS.length) {
     console.log(`screenshots: ${existing.length} already present, not uploading again`);
   } else {

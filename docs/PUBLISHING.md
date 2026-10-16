@@ -37,6 +37,8 @@ Everything except account creation, credentials and legal acceptance is scripted
    WEB_EXT_API_SECRET=<the JWT secret>
    ```
 
+   The names `JWT_ISSUER` and `JWT_SECRET`, as AMO's key page labels them, work too. To keep the file somewhere else, point the scripts at it with `AMO_ENV_FILE=/path/to/file`.
+
 3. `chmod 600` is enforced by the scripts. Never commit this file; `*.env` is in `.gitignore`. You can revoke and regenerate the credentials on the same AMO page at any time.
 
 ## 3. Submit
@@ -93,4 +95,5 @@ At https://addons.mozilla.org/developers/addons → the add-on → **Edit Produc
 | Date | Event |
 |---|---|
 | 2026-10-16 | v1.0.0 built, tested and released on GitHub as "Copy YouTube Transcript". |
-| 2026-10-16 | Renamed to Transcopy; v1.0.1 released on GitHub. AMO submission waiting for steps 1–2. |
+| 2026-10-16 | Renamed to Transcopy; v1.0.1 released on GitHub. |
+| 2026-10-16 | v1.0.1 submitted to AMO on the listed channel (https://addons.mozilla.org/firefox/addon/transcopy/). Status `nominated`, file `unreviewed`: awaiting Mozilla's review. |
