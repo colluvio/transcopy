@@ -1,0 +1,43 @@
+name: Release
+
+# Push a tag like v1.0.0 to test, lint, build and publish the package as a
+# GitHub Release. Mozilla signing and AMO submission are separate (see
+# docs/PUBLISHING.md) because they need the maintainer's AMO credentials.
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check that the tag matches the manifest version
+        run: |
+          version=$(node -p "require('./extension/manifest.json').version")
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "Tag $GITHUB_REF_NAME does not match manifest version $version"; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - run: npm test
+      - run: npm run lint
+      - run: npm run build
+      - name: Checksum
+        run: cd dist && sha256sum "copy-youtube-transcript-$VERSION.zip" > "copy-youtube-transcript-$VERSION.zip.sha256"
+      - name: Release notes from CHANGELOG.md
+        run: awk -v v="$VERSION" '$0 ~ "^## \\[" v "\\]" {p=1; next} /^## \[/ {p=0} p' CHANGELOG.md | sed '/^\[.*\]: /d' > release-notes.md
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/copy-youtube-transcript-$VERSION.zip" \
+            "dist/copy-youtube-transcript-$VERSION.zip.sha256" \
+            --title "Copy YouTube Transcript $VERSION" \
+            --notes-file release-notes.md
