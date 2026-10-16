@@ -1,0 +1,102 @@
+<!doctype html>
+<!--
+  AMO listing screenshots (1280x800), rendered by scripts/render-screenshots.mjs.
+  The popup uses the extension's real markup and stylesheet; the states shown
+  are the messages the extension displays. Transcript text is invented and no
+  third-party video imagery or logos are used.
+  Usage: compose.html?shot=1|2|3
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../extension/popup/popup.css">
+<style>
+  html, body { margin: 0; }
+  body.stage {
+    width: 1280px; height: 800px; overflow: hidden;
+    background: #111214; color: #f1f0ed;
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: grid; grid-template-columns: 560px 1fr; gap: 56px;
+    padding: 64px 72px; box-sizing: border-box;
+  }
+  .caption h2 { margin: 0 0 12px; font-size: 40px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+  .caption p { margin: 0 0 40px; color: #aaa9a6; font-size: 19px; max-width: 30em; }
+  .window { background: #f9f9fb; border-radius: 12px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.45); width: 560px; }
+  .toolbar { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f0f0f4; border-bottom: 1px solid #dcdce2; }
+  .url { flex: 1; background: #fff; border-radius: 6px; padding: 6px 12px; color: #5f6066; font-size: 14px; }
+  .tb-icon { width: 30px; height: 30px; border-radius: 6px; display: grid; place-items: center; background: #dfe0f7; }
+  .tb-icon img { width: 18px; height: 18px; }
+  .page { position: relative; height: 330px; background: #fff; }
+  .video { margin: 20px; height: 170px; border-radius: 10px; background: linear-gradient(135deg, #3a3d46, #22242a); }
+  .meta { margin: 0 20px; }
+  .meta i { display: block; height: 12px; border-radius: 6px; background: #e3e3e8; margin: 12px 0; }
+  .popup-wrap { position: absolute; top: 6px; right: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.25); border: 1px solid #d6d6dc; }
+  /* popup.css styles <body>; give the embedded popup the same surface. */
+  .popup-body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .paste { align-self: center; background: #1c1d21; border: 1px solid #2f3035; border-radius: 12px; padding: 22px 26px; }
+  .paste .label { color: #aaa9a6; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+  .paste pre { margin: 0; white-space: pre-wrap; font: 15px/1.65 ui-monospace, "SF Mono", Menlo, Consolas, monospace; color: #f1f0ed; }
+  .brand { position: absolute; left: 72px; bottom: 40px; color: #aaa9a6; font-size: 15px; }
+  .brand b { color: #f1f0ed; font-weight: 600; }
+</style>
+</head>
+<body class="stage">
+  <div>
+    <div class="caption"><h2 id="headline"></h2><p id="sub"></p></div>
+    <div class="window">
+      <div class="toolbar">
+        <div class="url">youtube.com/watch?v=…</div>
+        <div class="tb-icon"><img src="../../extension/icons/icon-32.png" alt=""></div>
+      </div>
+      <div class="page">
+        <div class="video"></div>
+        <div class="meta"><i style="width:80%"></i><i style="width:55%"></i><i style="width:65%"></i></div>
+        <div class="popup-wrap">
+          <div class="popup-body" style="width:300px">
+            <main>
+              <h1>Copy YouTube Transcript</h1>
+              <label class="option"><input type="checkbox" id="timestamps"> Include timestamps</label>
+              <button type="button">Copy transcript</button>
+              <p id="status" role="status"></p>
+            </main>
+            <footer>By <a href="#">Colluvio.org</a></footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="paste" id="paste"><div class="label">Pasted</div><pre id="out"></pre></div>
+  <div class="brand">An independent <b>Colluvio.org</b> project · free and open source · not affiliated with YouTube or Google</div>
+
+<script>
+  // Invented example transcript.
+  const SEGMENTS = [
+    ["0:00", "All right. Today we look at how a river carries sand downstream."],
+    ["0:07", "This model is small enough to fit on a table,"],
+    ["0:12", "but it behaves a lot like a real valley."],
+    ["0:18", "Watch what happens when I pour the water in."],
+    ["0:25", "The fine grains move first. The pebbles stay behind."],
+    ["0:33", "That sorting is why river beds look layered."],
+    ["0:41", "Let's slow it down and look closer."],
+  ];
+  const pad = (t) => t.split(":").map((n) => n.padStart(2, "0")).join(":");
+  const SHOTS = {
+    1: { headline: "One click copies the transcript", sub: "Click the toolbar button on a YouTube video. The transcript YouTube shows is copied as plain text, ready to paste anywhere.",
+         timestamps: false, status: ["Copied 104 segments (up to 13:29).", "ok"], out: SEGMENTS.map((s) => s[1]).join("\n") },
+    2: { headline: "Timestamps when you want them", sub: "Tick “Include timestamps” to get [MM:SS] (or [HH:MM:SS]) before every line. The choice is remembered.",
+         timestamps: true, status: ["Copied 104 segments (up to 13:29).", "ok"], out: SEGMENTS.map((s) => `[${pad(s[0])}] ${s[1]}`).join("\n") },
+    3: { headline: "Clear messages, never partial copies", sub: "If a video has no transcript, or YouTube doesn't load it, nothing is copied and you're told why.",
+         timestamps: false, status: ["This video doesn't offer a transcript. YouTube shows no “Show transcript” option for it.", "error"], out: null },
+  };
+  const shot = SHOTS[new URLSearchParams(location.search).get("shot") || "1"];
+  document.getElementById("headline").textContent = shot.headline;
+  document.getElementById("sub").textContent = shot.sub;
+  document.getElementById("timestamps").checked = shot.timestamps;
+  const status = document.getElementById("status");
+  status.textContent = shot.status[0];
+  status.dataset.kind = shot.status[1];
+  if (shot.out) document.getElementById("out").textContent = shot.out;
+  else document.getElementById("paste").style.visibility = "hidden";
+</script>
+</body>
+</html>
