@@ -22,14 +22,14 @@ If YouTube's transcript panel is closed, the extension first presses YouTube's o
 
 ## Data stored on your device
 
-The only thing the extension stores is your "Include timestamps" choice, kept with Firefox's extension storage on your computer. Removing the extension deletes it.
+The only things the extension stores are your "Include timestamps" and "Include title, URL, channel and date" choices, kept with Firefox's extension storage on your computer. Removing the extension deletes it.
 
 ## Permissions
 
 - activeTab: access the current tab only after you click the extension's button or use its shortcut.
 - scripting: run the transcript reader in that tab.
 - clipboardWrite: put the transcript on your clipboard.
-- storage: remember the "Include timestamps" choice.
+- storage: remember those two choices.
 
 In Firefox's data-collection settings the extension declares that it collects no data.
 

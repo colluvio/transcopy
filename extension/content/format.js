@@ -2,7 +2,8 @@
  * Text formatting.
  *
  * Turns extracted segments ({ timestamp: "1:08", text: "So I'm going to..." })
- * into the text placed on the clipboard. Words, order, punctuation and
+ * into the text placed on the clipboard, optionally under a header with the
+ * video's details. Words, order, punctuation and
  * repeated segments are preserved; only whitespace inside a segment is
  * normalized so that captions split over several lines read as one line.
  */
@@ -52,7 +53,28 @@
       .join("\n");
   }
 
-  const api = { normalizeText, formatTranscript };
+  /**
+   * Put the video's details above the transcript. Unknown details are left
+   * out rather than printed empty.
+   *
+   * @param {{title?: string|null, url?: string|null, channel?: string|null, published?: string|null}} details
+   * @param {string} transcript output of formatTranscript
+   */
+  function formatWithDetails(details, transcript) {
+    const fields = [
+      ["Title", details.title],
+      ["URL", details.url],
+      ["Channel", details.channel],
+      ["Published", details.published],
+    ];
+    const header = fields
+      .map(([name, value]) => [name, normalizeText(value)])
+      .filter(([, value]) => value !== "")
+      .map(([name, value]) => `${name}: ${value}`);
+    return [...header, "", "Transcript:", transcript].join("\n");
+  }
+
+  const api = { normalizeText, formatTranscript, formatWithDetails };
   root.Transcopy = Object.assign(root.Transcopy || {}, api);
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

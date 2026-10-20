@@ -7,7 +7,8 @@
  * 2. Use the open transcript panel, or open it with YouTube's own button.
  * 3. Wait until the segment list is complete: segments present, the count
  *    unchanged across several checks and no loading indicator.
- * 4. Extract and format. Fail with an error code instead of returning a
+ * 4. Extract and format, optionally under the video's title, URL, channel
+ *    and publication date. Fail with an error code instead of returning a
  *    partial or mismatched transcript.
  *
  * The result is a plain object; the popup turns error codes into messages.
@@ -17,7 +18,7 @@
 
   const lib =
     typeof module !== "undefined" && module.exports
-      ? Object.assign({}, require("./detect.js"), require("./segments.js"), require("./timestamps.js"), require("./format.js"))
+      ? Object.assign({}, require("./detect.js"), require("./segments.js"), require("./timestamps.js"), require("./format.js"), require("./metadata.js"))
       : root.Transcopy;
 
   const DEFAULTS = {
@@ -42,7 +43,7 @@
   }
 
   /**
-   * @param {{timestamps?: boolean}} options
+   * @param {{timestamps?: boolean, details?: boolean}} options
    * @param {{document?: Document, location?: Location, sleep?: Function, config?: object}} env
    *        injectable for tests; defaults to the live page.
    */
@@ -105,8 +106,11 @@
 
       if (stable >= cfg.stableChecks) {
         if (!isOrdered(segments)) return fail("INCONSISTENT");
-        const text = lib.formatTranscript(segments, { timestamps: !!options.timestamps });
-        if (!text) return fail("EMPTY");
+        const transcript = lib.formatTranscript(segments, { timestamps: !!options.timestamps });
+        if (!transcript) return fail("EMPTY");
+        const text = options.details
+          ? lib.formatWithDetails(lib.readVideoDetails(doc, videoId), transcript)
+          : transcript;
         return {
           ok: true,
           text,

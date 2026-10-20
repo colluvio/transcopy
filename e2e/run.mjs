@@ -124,8 +124,11 @@ async function copyViaToolbar(driver, timeoutMs = 35000) {
   return { text, changed: text !== SENTINEL, ms: Date.now() - started };
 }
 
-/** Set the "Include timestamps" preference through the popup's own checkbox. */
-async function setTimestampsPreference(driver, wanted) {
+/**
+ * Set the popup's options (checkbox ids: "timestamps", "details") through
+ * its own checkboxes.
+ */
+async function setPreferences(driver, wanted) {
   const host = await inChrome(driver, () =>
     driver.executeScript("return WebExtensionPolicy.getByID(arguments[0]).mozExtensionHostname", ADDON_ID)
   );
@@ -133,9 +136,11 @@ async function setTimestampsPreference(driver, wanted) {
   await driver.switchTo().newWindow("tab");
   await driver.get(`moz-extension://${host}/popup/popup.html`);
   await sleep(500);
-  const checked = await driver.executeScript("return document.getElementById('timestamps').checked");
-  if (checked !== wanted) await driver.executeScript("document.getElementById('timestamps').click()");
-  await sleep(300);
+  for (const [id, value] of Object.entries(wanted)) {
+    const checked = await driver.executeScript("return document.getElementById(arguments[0]).checked", id);
+    if (checked !== value) await driver.executeScript("document.getElementById(arguments[0]).click()", id);
+    await sleep(300);
+  }
   await driver.close();
   await driver.switchTo().window(original);
 }
@@ -174,6 +179,17 @@ const pagePanel = (driver) =>
     const tx = (s) => (s.querySelector('.ytAttributedStringHost, [role=text], .segment-text')?.textContent || '').replace(/\\s+/g, ' ').trim();
     return { open: true, count: segs.length, firstTs: ts(segs[0]), lastTs: ts(segs.at(-1)), firstText: tx(segs[0]), lastText: tx(segs.at(-1)) };`);
 
+/** Title, channel and date as the watch page displays them (English UI). */
+const pageDetails = (driver) =>
+  driver.executeScript(`
+    const text = (s) => (document.querySelector(s)?.textContent || '').replace(/\\s+/g, ' ').trim();
+    const tip = text('ytd-watch-info-text tp-yt-paper-tooltip');
+    return {
+      title: text('ytd-watch-metadata h1'),
+      channel: text('ytd-watch-metadata ytd-channel-name a'),
+      date: (tip.match(/[A-Z][a-z]{2} \\d{1,2}, \\d{4}/) || [''])[0],
+    };`);
+
 /** Open the transcript panel with YouTube's own button and wait. */
 async function openPanelManually(driver) {
   await driver.executeScript(
@@ -189,7 +205,7 @@ async function openPanelManually(driver) {
 /** Run the extension's content scripts directly in the page to read an error code. */
 async function runContentScriptsInPage(driver) {
   const dir = `${root}extension/content/`;
-  const order = ["timestamps.js", "format.js", "segments.js", "detect.js", "run.js"];
+  const order = ["timestamps.js", "format.js", "segments.js", "detect.js", "metadata.js", "run.js"];
   const sources = await Promise.all(order.map((f) => readFile(dir + f, "utf8")));
   return driver.executeAsyncScript(
     `const done = arguments[arguments.length - 1];
@@ -234,7 +250,7 @@ function checkTimestamped(name, text, panel, hours) {
 
 const SCENARIOS = {
   async "supplied-closed"(d) {
-    await setTimestampsPreference(d, false);
+    await setPreferences(d, { timestamps: false, details: false });
     await openVideo(d, VIDEOS.supplied);
     const before = await pagePanel(d);
     check("supplied-closed: transcript panel starts closed", !before.open);
@@ -261,7 +277,7 @@ const SCENARIOS = {
   },
 
   async "supplied-open-timestamps"(d) {
-    await setTimestampsPreference(d, true);
+    await setPreferences(d, { timestamps: true, details: false });
     await openVideo(d, VIDEOS.supplied);
     check("supplied-open: panel opened by hand first", await openPanelManually(d));
     const r = await copyViaToolbar(d);
@@ -275,7 +291,7 @@ const SCENARIOS = {
   },
 
   async "manual-captions"(d) {
-    await setTimestampsPreference(d, false);
+    await setPreferences(d, { timestamps: false, details: false });
     await openVideo(d, VIDEOS.manual);
     const r = await copyViaToolbar(d);
     check("manual-captions: clipboard written", r.changed, `${r.ms} ms`);
@@ -283,7 +299,7 @@ const SCENARIOS = {
   },
 
   async "spanish-auto"(d) {
-    await setTimestampsPreference(d, true);
+    await setPreferences(d, { timestamps: true, details: false });
     await openVideo(d, VIDEOS.spanish);
     const r = await copyViaToolbar(d);
     check("spanish-auto: clipboard written", r.changed, `${r.ms} ms`);
@@ -298,7 +314,7 @@ const SCENARIOS = {
   },
 
   async long(d) {
-    await setTimestampsPreference(d, false);
+    await setPreferences(d, { timestamps: false, details: false });
     await openVideo(d, VIDEOS.long);
     const r = await copyViaToolbar(d, 60000);
     check("long: clipboard written", r.changed, `${r.ms} ms`);
@@ -318,7 +334,7 @@ const SCENARIOS = {
   },
 
   async "spa-navigation"(d) {
-    await setTimestampsPreference(d, false);
+    await setPreferences(d, { timestamps: false, details: false });
     await openVideo(d, VIDEOS.supplied);
     const first = await copyViaToolbar(d);
     check("spa: first video copied", first.changed);
@@ -339,7 +355,7 @@ const SCENARIOS = {
   async "spa-to-known-video"(d) {
     // Navigate inside YouTube (no page load) to a video known to have a
     // transcript, the way YouTube's own links do, and copy immediately.
-    await setTimestampsPreference(d, false);
+    await setPreferences(d, { timestamps: false, details: false });
     await openVideo(d, VIDEOS.manual);
     const first = await copyViaToolbar(d);
     check("spa-known: first video copied", first.changed);
@@ -358,10 +374,42 @@ const SCENARIOS = {
       second.changed ? `${lines(second.text).length} lines; ${excerpt(lines(second.text)[0])}` : "nothing copied");
   },
 
+  async details(d) {
+    // Default options: video details on top, then the transcript. The
+    // details are compared with what the page shows, including after an
+    // in-page navigation, when YouTube's <head> metadata is stale.
+    await setPreferences(d, { timestamps: true, details: true });
+    const checkDetails = async (name, videoId) => {
+      const r = await copyViaToolbar(d);
+      check(`${name}: clipboard written`, r.changed, `${r.ms} ms`);
+      if (!r.changed) return;
+      const page = await pageDetails(d);
+      const ls = lines(r.text);
+      const header = ls.slice(0, ls.indexOf("Transcript:"));
+      check(`${name}: title matches the page`, header.includes(`Title: ${page.title}`), excerpt(header[0] || ""));
+      check(`${name}: canonical URL`, header.includes(`URL: https://www.youtube.com/watch?v=${videoId}`));
+      check(`${name}: channel matches the page`, header.includes(`Channel: ${page.channel}`), page.channel);
+      const published = (header.find((l) => l.startsWith("Published: ")) || "").slice(11);
+      const shown = new Date(`${page.date} 12:00`);
+      check(`${name}: date matches the one YouTube shows`, /^\d{4}-\d{2}-\d{2}$/.test(published) && new Date(`${published}T12:00`).getTime() === shown.getTime(), `${published} / "${page.date}"`);
+      check(`${name}: blank line, then "Transcript:", then [MM:SS] lines`, ls[header.length - 1] === "" && /^\[\d\d:\d\d(:\d\d)?\] \S/.test(ls[header.length + 1] || ""));
+    };
+    await openVideo(d, VIDEOS.manual);
+    await checkDetails("details", VIDEOS.manual);
+    await d.executeScript(`
+      const id = arguments[0];
+      document.querySelector("ytd-app").dispatchEvent(new CustomEvent("yt-navigate", { bubbles: true, detail: { endpoint: {
+        commandMetadata: { webCommandMetadata: { url: "/watch?v=" + id, webPageType: "WEB_PAGE_TYPE_WATCH", rootVe: 3832 } },
+        watchEndpoint: { videoId: id } } } }));`, VIDEOS.supplied);
+    await sleep(3000);
+    await checkDetails("details-after-navigation", VIDEOS.supplied);
+  },
+
   async "load-failure"(d) {
     // A video for which YouTube's panel often stays empty for anonymous,
     // automated sessions. Either outcome must be clean: a complete copy or
     // nothing at all.
+    await setPreferences(d, { timestamps: false, details: false });
     await openVideo(d, "CLCJaiyjKkc");
     const r = await copyViaToolbar(d, 40000);
     const panel = await pagePanel(d);
@@ -375,7 +423,7 @@ const SCENARIOS = {
   },
 
   async reload(d) {
-    await setTimestampsPreference(d, false);
+    await setPreferences(d, { timestamps: false, details: false });
     await openVideo(d, VIDEOS.supplied);
     await copyViaToolbar(d);
     await d.navigate().refresh();

@@ -3,6 +3,7 @@
 //
 //   node scripts/amo.mjs status    # listing and review status
 //   node scripts/amo.mjs listing   # upload icon, screenshots and privacy policy
+//   node scripts/amo.mjs listing --replace-screenshots   # after npm run screenshots
 //
 // Credentials come from the same chmod-600 file as scripts/amo-submit.sh
 // (default ~/.config/colluvio/amo.env, override with AMO_ENV_FILE). They are
@@ -18,8 +19,8 @@ const manifest = JSON.parse(await readFile(`${root}extension/manifest.json`, "ut
 const GUID = manifest.browser_specific_settings.gecko.id;
 
 const SCREENSHOTS = [
-  ["amo/screenshots/screenshot-1.png", "One click copies the transcript YouTube shows, as plain text."],
-  ["amo/screenshots/screenshot-2.png", "Optional timestamps: [MM:SS] before every line."],
+  ["amo/screenshots/screenshot-1.png", "One click copies the video's title, link, channel and date, then the transcript YouTube shows."],
+  ["amo/screenshots/screenshot-2.png", "Optional timestamps: [MM:SS] before every line. The details can be turned off."],
   ["amo/screenshots/screenshot-3.png", "Clear messages instead of partial copies."],
 ];
 
@@ -122,15 +123,32 @@ async function fileBlob(rel, type) {
   return new Blob([await readFile(`${root}${rel}`)], { type });
 }
 
-async function listing(creds) {
-  const addon = await api(creds, "GET", addonPath);
+async function uploadScreenshot(creds, file, caption, position) {
+  const form = new FormData();
+  form.append("image", await fileBlob(file, "image/png"), file.split("/").pop());
+  form.append("position", String(position));
+  const preview = await api(creds, "POST", `${addonPath}previews/`, form);
+  await api(creds, "PATCH", `${addonPath}previews/${preview.id}/`, { caption: { "en-US": caption }, position });
+}
 
-  const icon = new FormData();
-  icon.append("icon", await fileBlob("extension/icons/icon-128.png", "image/png"), "icon-128.png");
-  await api(creds, "PATCH", addonPath, icon);
-  console.log("icon: uploaded");
+/** Upload the current screenshots, then remove the old ones, so the listing is never left without any. */
+async function replaceScreenshots(creds, existing) {
+  for (const [i, [file, caption]] of SCREENSHOTS.entries()) {
+    await uploadScreenshot(creds, file, caption, existing.length + i);
+    console.log(`screenshot ${i + 1}: uploaded`);
+  }
+  for (const preview of existing) {
+    await api(creds, "DELETE", `${addonPath}previews/${preview.id}/`);
+    console.log(`old screenshot ${preview.id}: removed`);
+  }
+  const current = (await api(creds, "GET", addonPath)).previews || [];
+  for (const [i, preview] of current.entries()) {
+    if (preview.position !== i) await api(creds, "PATCH", `${addonPath}previews/${preview.id}/`, { position: i });
+  }
+}
 
-  const existing = addon.previews || [];
+/** Upload screenshots that aren't on AMO yet; never duplicates existing ones. */
+async function addMissingScreenshots(creds, existing) {
   // A screenshot uploaded by an interrupted run may still lack its caption.
   for (const [i, preview] of existing.entries()) {
     if (i < SCREENSHOTS.length && !(preview.caption && preview.caption["en-US"])) {
@@ -140,17 +158,26 @@ async function listing(creds) {
   }
   if (existing.length >= SCREENSHOTS.length) {
     console.log(`screenshots: ${existing.length} already present, not uploading again`);
-  } else {
-    for (const [i, [file, caption]] of SCREENSHOTS.entries()) {
-      if (i < existing.length) continue;
-      const form = new FormData();
-      form.append("image", await fileBlob(file, "image/png"), file.split("/").pop());
-      form.append("position", String(i));
-      const preview = await api(creds, "POST", `${addonPath}previews/`, form);
-      await api(creds, "PATCH", `${addonPath}previews/${preview.id}/`, { caption: { "en-US": caption }, position: i });
-      console.log(`screenshot ${i + 1}: uploaded`);
-    }
+    return;
   }
+  for (const [i, [file, caption]] of SCREENSHOTS.entries()) {
+    if (i < existing.length) continue;
+    await uploadScreenshot(creds, file, caption, i);
+    console.log(`screenshot ${i + 1}: uploaded`);
+  }
+}
+
+async function listing(creds, { replace = false } = {}) {
+  const addon = await api(creds, "GET", addonPath);
+
+  const icon = new FormData();
+  icon.append("icon", await fileBlob("extension/icons/icon-128.png", "image/png"), "icon-128.png");
+  await api(creds, "PATCH", addonPath, icon);
+  console.log("icon: uploaded");
+
+  const existing = addon.previews || [];
+  if (replace) await replaceScreenshots(creds, existing);
+  else await addMissingScreenshots(creds, existing);
 
   const privacy = (await readFile(`${root}PRIVACY.md`, "utf8")).trim();
   await api(creds, "PATCH", `${addonPath}eula_policy/`, { privacy_policy: { "en-US": privacy } });
@@ -163,9 +190,9 @@ const command = process.argv[2];
 try {
   const creds = await loadCredentials();
   if (command === "status") await status(creds);
-  else if (command === "listing") await listing(creds);
+  else if (command === "listing") await listing(creds, { replace: process.argv.includes("--replace-screenshots") });
   else {
-    console.error("usage: node scripts/amo.mjs status|listing");
+    console.error("usage: node scripts/amo.mjs status | listing [--replace-screenshots]");
     process.exit(2);
   }
 } catch (error) {

@@ -3,9 +3,19 @@
   Synthetic fixture modelled on YouTube's 2025-2026 watch page ("In this
   video" panel). The structure mirrors the live DOM; all text is invented.
 -->
-<html><body>
+<html><head>
+<!-- Written once per page load: describes the video the page was loaded with, which is stale after in-page navigation. -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","@id":"https://www.youtube.com/watch?v\u003dPREVIOUS001","name":"A previously loaded video","uploadDate":"2020-01-02T03:04:05-08:00"}</script>
+</head><body>
 <ytd-app>
   <ytd-watch-flexy video-id="TESTVIDEO01">
+    <div id="microformat">
+      <player-microformat-renderer><script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","description":"Invented description.","name":"How rivers carry sand","uploadDate":"2026-03-07T22:15:00-08:00","@id":"https://www.youtube.com/watch?v\u003dTESTVIDEO01","author":"River Lab","genre":"Education"}</script></player-microformat-renderer>
+    </div>
+    <ytd-watch-metadata>
+      <div id="title"><h1><yt-formatted-string>How rivers carry sand</yt-formatted-string></h1></div>
+      <div id="owner"><ytd-channel-name><div id="text-container"><yt-formatted-string id="text"><a href="/@riverlab">River Lab</a></yt-formatted-string></div></ytd-channel-name></div>
+    </ytd-watch-metadata>
     <div id="description">
       <ytd-video-description-transcript-section-renderer>
         <ytd-button-renderer><yt-button-shape><button aria-label="Show transcript">Show transcript</button></yt-button-shape></ytd-button-renderer>

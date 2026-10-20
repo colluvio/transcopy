@@ -67,6 +67,13 @@ node scripts/amo.mjs listing
 
 This uploads `extension/icons/icon-128.png`, the three screenshots in `amo/screenshots/` with captions, and `PRIVACY.md` as the privacy policy. It is safe to rerun: screenshots are not uploaded twice.
 
+When the popup changes, render new screenshots and swap them in. The new ones are uploaded before the old ones are removed:
+
+```bash
+npm run screenshots
+node scripts/amo.mjs listing --replace-screenshots
+```
+
 ## 5. Status
 
 ```bash
@@ -97,3 +104,5 @@ At https://addons.mozilla.org/developers/addons → the add-on → **Edit Produc
 | 2026-10-16 | v1.0.0 built, tested and released on GitHub as "Copy YouTube Transcript". |
 | 2026-10-16 | Renamed to Transcopy; v1.0.1 released on GitHub. |
 | 2026-10-16 | v1.0.1 submitted to AMO on the listed channel (https://addons.mozilla.org/firefox/addon/transcopy/). Status `nominated`, file `unreviewed`: awaiting Mozilla's review. |
+| by 2026-10-21 | v1.0.1 approved: add-on `public`, https://addons.mozilla.org/firefox/addon/transcopy/. |
+| 2026-10-21 | v1.0.2 (video details) submitted on the listed channel. File `unreviewed`; 1.0.1 stays public until it is approved. |

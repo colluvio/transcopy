@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.2] - 2026-10-21
+
+### Added
+
+- The copy now starts with the video's title, URL, channel and publication date (`YYYY-MM-DD`), followed by a blank line, `Transcript:` and the transcript. This is on by default; untick **Include title, URL, channel and date** in the popup to copy the transcript alone. The choice is remembered.
+
 ## [1.0.1] - 2026-10-16
 
 ### Changed
@@ -25,5 +31,6 @@ No change in behavior.
 - Clear error messages for pages that aren't videos, missing transcripts, load failures, incomplete loads, navigation during copying and clipboard errors.
 - Unit tests with synthetic HTML fixtures, an end-to-end test in real Firefox, `web-ext lint`, and GitHub Actions for CI and release packaging.
 
+[1.0.2]: https://github.com/colluvio/transcopy/releases/tag/v1.0.2
 [1.0.1]: https://github.com/colluvio/transcopy/releases/tag/v1.0.1
 [1.0.0]: https://github.com/colluvio/transcopy/releases/tag/v1.0.0

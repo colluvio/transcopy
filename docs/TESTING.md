@@ -26,7 +26,8 @@ The fixtures copy YouTube's DOM structure but contain only invented text. The te
 - stale content during in-page navigation, and navigation during loading;
 - timestamps that go backwards;
 - pages that aren't watch pages;
-- transcript text treated as text, never markup.
+- transcript text treated as text, never markup;
+- video details from the current video's `VideoObject` record, never from one describing another video (the stale `<head>` copy), with a fallback to the title and channel shown on the page.
 
 ## End-to-end test
 
@@ -58,6 +59,9 @@ Firefox 140+ and geckodriver 0.36+ are needed (geckodriver runs with `--allow-sy
 | `load-failure` | `CLCJaiyjKkc` | YouTube often leaves this panel empty for anonymous automated sessions. The result is either clipboard untouched with `LOAD_FAILED`, or a complete copy. |
 | `reload` | `0UPvLfZ6X3Q` | Still works after a page reload. |
 | `not-a-video` | youtube.com home | Clipboard untouched. |
+| `details` | `av3zdxYvCp8`, then in-page navigation to `0UPvLfZ6X3Q` | Default options: title, canonical URL, channel and date match what the page shows, before and after navigation, followed by a blank line, `Transcript:` and the timestamped transcript. |
+
+The other scenarios turn the details off, so their lines compare one-to-one with the panel.
 
 ### Results, 16 October 2026 (Firefox 158.0, geckodriver 0.37.1, Linux/WSL2)
 
@@ -100,3 +104,11 @@ Not yet run by a person for 1.0.0. In particular the keyboard shortcut (13), the
 13. **Keyboard shortcut.** <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> opens the popup and copies. It can be changed in `about:addons` → gear → Manage Extension Shortcuts.
 14. **Clipboard in other applications (required).** After copying, paste into an application outside Firefox (a text editor, Word, the ChatGPT or Claude desktop app). The automated tests only verify Firefox's clipboard; see the note above.
 15. **Dark mode.** The popup is readable with the system in dark mode.
+
+### Video details (1.0.2), 21 October 2026 (Firefox 158.0.1)
+
+- `npm test`: 39/39 pass. `npm run lint`: 0 errors, the same 1 warning.
+- **End to end not verified:** YouTube again refused transcripts to this test connection. The unmodified 1.0.1 failed the same scenarios (`supplied-closed`, `manual-captions`), and so did opening the panel by hand.
+- `readVideoDetails`, run in live pages: for `av3zdxYvCp8`, `8yJyKGOwCW4` and, after an in-page navigation, `0UPvLfZ6X3Q`, the title, channel and date matched the page. The date matched the one in YouTube's tooltip, including "Premiered Dec 11, 2022". For the Spanish video, the record holds the original Spanish title while the English UI showed YouTube's translation. The `<head>` record still described the first video after navigation, as expected.
+- Rerun `npm run build && E2E_ONLY=details npm run test:e2e` once YouTube serves transcripts again.
+

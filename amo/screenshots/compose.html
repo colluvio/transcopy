@@ -55,6 +55,7 @@
           <div class="popup-body" style="width:300px">
             <main>
               <h1>Transcopy</h1>
+              <label class="option"><input type="checkbox" id="details"> Include title, URL, channel and date</label>
               <label class="option"><input type="checkbox" id="timestamps"> Include timestamps</label>
               <button type="button">Copy transcript</button>
               <p id="status" role="status"></p>
@@ -79,18 +80,20 @@
     ["0:33", "That sorting is why river beds look layered."],
     ["0:41", "Let's slow it down and look closer."],
   ];
+  const DETAILS = "Title: How rivers carry sand\nURL: https://www.youtube.com/watch?v=…\nChannel: River Lab\nPublished: 2026-03-07\n\nTranscript:\n";
   const pad = (t) => t.split(":").map((n) => n.padStart(2, "0")).join(":");
   const SHOTS = {
-    1: { headline: "One click copies the transcript", sub: "Click the toolbar button on a YouTube video. The transcript YouTube shows is copied as plain text, ready to paste anywhere.",
-         timestamps: false, status: ["Copied 104 segments (up to 13:29).", "ok"], out: SEGMENTS.map((s) => s[1]).join("\n") },
-    2: { headline: "Timestamps when you want them", sub: "Tick “Include timestamps” to get [MM:SS] (or [HH:MM:SS]) before every line. The choice is remembered.",
-         timestamps: true, status: ["Copied 104 segments (up to 13:29).", "ok"], out: SEGMENTS.map((s) => `[${pad(s[0])}] ${s[1]}`).join("\n") },
+    1: { headline: "One click copies the transcript", sub: "Click the toolbar button on a YouTube video. You get the video's title, link, channel and date, then the transcript YouTube shows, ready to paste anywhere.",
+         details: true, timestamps: false, status: ["Copied 104 segments (up to 13:29).", "ok"], out: DETAILS + SEGMENTS.slice(0, 5).map((s) => s[1]).join("\n") },
+    2: { headline: "Timestamps when you want them", sub: "Tick “Include timestamps” to get [MM:SS] (or [HH:MM:SS]) before every line. Untick the details to copy the transcript alone. Your choices are remembered.",
+         details: false, timestamps: true, status: ["Copied 104 segments (up to 13:29).", "ok"], out: SEGMENTS.map((s) => `[${pad(s[0])}] ${s[1]}`).join("\n") },
     3: { headline: "Clear messages, never partial copies", sub: "If a video has no transcript, or YouTube doesn't load it, nothing is copied and you're told why.",
-         timestamps: false, status: ["This video doesn't offer a transcript. YouTube shows no “Show transcript” option for it.", "error"], out: null },
+         details: true, timestamps: false, status: ["This video doesn't offer a transcript. YouTube shows no “Show transcript” option for it.", "error"], out: null },
   };
   const shot = SHOTS[new URLSearchParams(location.search).get("shot") || "1"];
   document.getElementById("headline").textContent = shot.headline;
   document.getElementById("sub").textContent = shot.sub;
+  document.getElementById("details").checked = shot.details;
   document.getElementById("timestamps").checked = shot.timestamps;
   const status = document.getElementById("status");
   status.textContent = shot.status[0];

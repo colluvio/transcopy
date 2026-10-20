@@ -49,6 +49,8 @@ h1 {
   cursor: pointer;
 }
 
+.option + .option { margin-top: -6px; }
+
 .option input { margin: 0; width: 16px; height: 16px; accent-color: var(--accent); }
 
 button {

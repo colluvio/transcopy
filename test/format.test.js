@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { parseTimestamp, formatTimestamp } = require("../extension/content/timestamps.js");
-const { normalizeText, formatTranscript } = require("../extension/content/format.js");
+const { normalizeText, formatTranscript, formatWithDetails } = require("../extension/content/format.js");
 
 test("parseTimestamp reads m:ss and h:mm:ss labels", () => {
   assert.equal(parseTimestamp("0:00"), 0);
@@ -88,4 +88,24 @@ test("formats a long transcript quickly", () => {
   const out = formatTranscript(many, { timestamps: true });
   assert.equal(out.split("\n").length, 20000);
   assert.ok(Date.now() - started < 1000);
+});
+
+test("details header lists known fields, then the transcript", () => {
+  const details = {
+    title: "4 inversiones que resisten las crisis",
+    url: "https://www.youtube.com/watch?v=abc",
+    channel: "Canal\nde prueba",
+    published: "2026-10-01",
+  };
+  assert.equal(
+    formatWithDetails(details, "[00:00] Hola"),
+    "Title: 4 inversiones que resisten las crisis\nURL: https://www.youtube.com/watch?v=abc\nChannel: Canal de prueba\nPublished: 2026-10-01\n\nTranscript:\n[00:00] Hola"
+  );
+});
+
+test("details header leaves out unknown fields", () => {
+  assert.equal(
+    formatWithDetails({ title: null, url: "https://www.youtube.com/watch?v=abc", channel: " ", published: undefined }, "Hola"),
+    "URL: https://www.youtube.com/watch?v=abc\n\nTranscript:\nHola"
+  );
 });

@@ -7,6 +7,7 @@ const { JSDOM } = require("jsdom");
 const { readSegments, textOf } = require("../extension/content/segments.js");
 const detect = require("../extension/content/detect.js");
 const { copyTranscript, isOrdered } = require("../extension/content/run.js");
+const { readVideoDetails } = require("../extension/content/metadata.js");
 
 const fixture = (name) => fs.readFileSync(path.join(__dirname, "fixtures", name), "utf8");
 
@@ -69,6 +70,60 @@ test("textOf ignores script/style/template content", () => {
   assert.equal(textOf(document.querySelector("p")), "ab c");
 });
 
+// ------------------------------------------------------------- video details
+
+test("video details come from the VideoObject record of the current video", () => {
+  const p = page("modern.html", "TESTVIDEO01");
+  assert.deepEqual(readVideoDetails(p.document, "TESTVIDEO01"), {
+    title: "How rivers carry sand",
+    url: "https://www.youtube.com/watch?v=TESTVIDEO01",
+    channel: "River Lab",
+    // The date YouTube shows, not converted to another time zone.
+    published: "2026-03-07",
+  });
+});
+
+test("video details never use a record that belongs to another video", () => {
+  const p = page("modern.html", "TESTVIDEO01");
+  p.document.querySelector("#microformat").remove();
+  p.document.querySelector("ytd-watch-metadata h1").textContent = "Title shown on the page";
+  p.document.querySelector("ytd-channel-name a").textContent = "Channel shown on the page";
+  // Only the stale <head> record (PREVIOUS001) is left: fall back to the page.
+  assert.deepEqual(readVideoDetails(p.document, "TESTVIDEO01"), {
+    title: "Title shown on the page",
+    url: "https://www.youtube.com/watch?v=TESTVIDEO01",
+    channel: "Channel shown on the page",
+    published: null,
+  });
+});
+
+test("video details: author objects, date-only values and broken records", () => {
+  const p = page("modern.html", "TESTVIDEO01");
+  const script = p.document.querySelector("#microformat script");
+  script.textContent = JSON.stringify({
+    "@type": "VideoObject",
+    "@id": "https://www.youtube.com/watch?v=TESTVIDEO01",
+    name: "  Spaced\n title ",
+    author: { "@type": "Person", name: "Object Author" },
+    uploadDate: "2024-02-29",
+  });
+  script.insertAdjacentHTML("beforebegin", '<script type="application/ld+json">{not json</script>');
+  const details = readVideoDetails(p.document, "TESTVIDEO01");
+  assert.equal(details.title, "Spaced title");
+  assert.equal(details.channel, "Object Author");
+  assert.equal(details.published, "2024-02-29");
+});
+
+test("video details: only the URL when the page shows nothing else", () => {
+  const p = page("legacy.html", "TESTVIDEO02");
+  assert.deepEqual(readVideoDetails(p.document, "TESTVIDEO02"), {
+    title: null,
+    url: "https://www.youtube.com/watch?v=TESTVIDEO02",
+    channel: null,
+    published: null,
+  });
+});
+
 // ----------------------------------------------------------------- detection
 
 test("videoIdFromUrl accepts only YouTube watch pages", () => {
@@ -120,6 +175,23 @@ test("panel already open: copies with timestamps", async () => {
     "[01:08] So I'm going to pour the water now.",
   ]);
   assert.equal(result.text.split("\n")[5], "[13:29] ¡Gracias! Ça va — 日本語 & “quotes” after a line break.");
+});
+
+test("details option: title, URL, channel and date above the transcript", async () => {
+  const p = page("modern.html", "TESTVIDEO01");
+  const result = await copyTranscript({ timestamps: true, details: true }, env(p));
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.text.split("\n").slice(0, 8), [
+    "Title: How rivers carry sand",
+    "URL: https://www.youtube.com/watch?v=TESTVIDEO01",
+    "Channel: River Lab",
+    "Published: 2026-03-07",
+    "",
+    "Transcript:",
+    "[00:00] All right. Today we look at how a river carries sand downstream.",
+    "[00:07] So this is a model that's small enough to fit on a table.",
+  ]);
+  assert.equal(result.characters, result.text.length);
 });
 
 test("legacy panel: hour-long timestamps and language label", async () => {

@@ -24,7 +24,7 @@ npm start          # try it in Firefox with web-ext run
 
 Guidelines:
 
-- **Keep the concerns separate**: detection (`detect.js`), extraction (`segments.js`), timestamps (`timestamps.js`), formatting (`format.js`), orchestration (`run.js`), clipboard and UI (`popup/`).
+- **Keep the concerns separate**: detection (`detect.js`), extraction (`segments.js`), video details (`metadata.js`), timestamps (`timestamps.js`), formatting (`format.js`), orchestration (`run.js`), clipboard and UI (`popup/`).
 - **Never copy partial or mismatched transcripts.** Fail with an error code instead, and add its message to `popup/messages.js`.
 - **No network requests, analytics, remote code or new permissions.** Any change to permissions needs a matching update to `PRIVACY.md` and the AMO listing.
 - **No undocumented YouTube API calls.** Read what the page displays.

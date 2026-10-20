@@ -1,7 +1,7 @@
 /*
  * User interface. Opening the popup (toolbar click or keyboard shortcut)
  * copies the transcript straight away, so the common case is one click.
- * The checkbox choice is remembered; changing it copies again.
+ * The checkbox choices are remembered; changing one copies again.
  */
 import { messageFor } from "./messages.js";
 import { writeText } from "./clipboard.js";
@@ -11,10 +11,12 @@ const CONTENT_SCRIPTS = [
   "/content/format.js",
   "/content/segments.js",
   "/content/detect.js",
+  "/content/metadata.js",
   "/content/run.js",
 ];
 
 const timestampsBox = document.getElementById("timestamps");
+const detailsBox = document.getElementById("details");
 const copyButton = document.getElementById("copy");
 const statusEl = document.getElementById("status");
 
@@ -31,13 +33,13 @@ async function activeTab() {
 }
 
 /** Run the extraction in the tab and return its result object. */
-async function extract(tabId, timestamps) {
+async function extract(tabId, options) {
   try {
     await browser.scripting.executeScript({ target: { tabId }, files: CONTENT_SCRIPTS });
     const [injection] = await browser.scripting.executeScript({
       target: { tabId },
       func: (opts) => globalThis.Transcopy.copyTranscript(opts),
-      args: [{ timestamps }],
+      args: [options],
     });
     if (injection && injection.error) throw injection.error;
     return (injection && injection.result) || { ok: false, code: "UNEXPECTED" };
@@ -59,7 +61,10 @@ async function copy() {
       return;
     }
 
-    const result = await extract(tab.id, timestampsBox.checked);
+    const result = await extract(tab.id, {
+      timestamps: timestampsBox.checked,
+      details: detailsBox.checked,
+    });
     if (!result.ok) {
       setStatus(messageFor(result.code), "error");
       return;
@@ -87,16 +92,22 @@ async function copy() {
 
 async function init() {
   try {
-    const { timestamps = false } = await browser.storage.local.get("timestamps");
+    const { timestamps = false, details = true } = await browser.storage.local.get([
+      "timestamps",
+      "details",
+    ]);
     timestampsBox.checked = !!timestamps;
+    detailsBox.checked = !!details;
   } catch {
-    // Storage unavailable: keep the default (text only).
+    // Storage unavailable: keep the defaults (details, no timestamps).
   }
 
-  timestampsBox.addEventListener("change", () => {
-    browser.storage.local.set({ timestamps: timestampsBox.checked }).catch(() => {});
-    copy();
-  });
+  for (const [key, box] of [["timestamps", timestampsBox], ["details", detailsBox]]) {
+    box.addEventListener("change", () => {
+      browser.storage.local.set({ [key]: box.checked }).catch(() => {});
+      copy();
+    });
+  }
   copyButton.addEventListener("click", copy);
 
   copy();

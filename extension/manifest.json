@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Transcopy",
   "short_name": "Transcopy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Copy the transcript YouTube shows for a video to your clipboard, as plain text or with timestamps. By Colluvio.org.",
   "author": "Colluvio.org",
   "homepage_url": "https://github.com/colluvio/transcopy",

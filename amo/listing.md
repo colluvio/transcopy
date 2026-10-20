@@ -19,7 +19,7 @@
 | Data collection | None (`data_collection_permissions.required: ["none"]`) |
 | Experimental / requires payment | No / No |
 | Icon | `extension/icons/icon-128.png` |
-| Screenshots (1280×800) | `amo/screenshots/screenshot-1.png`: "One click copies the transcript YouTube shows, as plain text." · `screenshot-2.png`: "Optional timestamps: [MM:SS] before every line." · `screenshot-3.png`: "Clear messages instead of partial copies." |
+| Screenshots (1280×800) | `amo/screenshots/screenshot-1.png`: "One click copies the video's title, link, channel and date, then the transcript YouTube shows." · `screenshot-2.png`: "Optional timestamps: [MM:SS] before every line. The details can be turned off." · `screenshot-3.png`: "Clear messages instead of partial copies." |
 
 The screenshots are rendered from `amo/screenshots/compose.html`, using the popup's real markup and stylesheet with invented transcript text. They contain no third-party video imagery or YouTube logos.
 
