@@ -28,4 +28,4 @@ npm run test:e2e     # live YouTube; needs Firefox 140+, geckodriver 0.36+; YouT
 - Don't call undocumented YouTube APIs (`get_transcript`, `timedtext`). Read what the page shows.
 - No network requests, analytics, remote code or new permissions. A permission change needs matching updates to `PRIVACY.md` and the AMO listing.
 - Release: bump the manifest and `package.json` versions and update `CHANGELOG.md`. AMO submission follows `docs/PUBLISHING.md` and is outward-facing: get the user's OK.
-- AMO credentials are in `~/.config/mozilla/developer_credentials.env` (pass it as `AMO_ENV_FILE=`). Never read or print it.
+- AMO credentials come from a local env file passed as `AMO_ENV_FILE=` (see `docs/PUBLISHING.md`). Never read, print or commit it.
